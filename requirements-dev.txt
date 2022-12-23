@@ -1,0 +1,9 @@
+pytest
+mkdocs
+pytest-cov
+flake8
+pytest-flask
+flask
+pyjwt
+requests_mock
+pytest-dotenv
