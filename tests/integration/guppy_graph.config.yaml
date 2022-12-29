@@ -181,7 +181,6 @@ vertices:
         query ($filter: JSON,) {
             file (accessibility: all, offset: 0, first: 20, , filter: $filter,) {          
               project_id
-              file_category
               file_name
               file_size
               object_id
