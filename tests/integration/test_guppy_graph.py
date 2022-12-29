@@ -28,15 +28,20 @@ def _run_queries(auth):
     assert sorted(patient_aggregations.keys()) == ['_totalCount', 'extension_0_extension_1_valueString', 'gender',
                                                    'project_id']
     print("How many patients?", {}, patient_aggregations._totalCount, len(keys))
+    assert patient_aggregations._totalCount > 0
+
     print("What are there races?", patient_aggregations['extension_0_extension_1_valueString'])
     print(rows.keys())
     print("Number of patients in 1st page", len(rows.patient), "Total number of patients",
           rows._aggregation.patient._totalCount)
+
     aggregation, rows, keys = gg.query('observation')
     observation_aggregations = aggregation._aggregation.observation
     assert sorted(observation_aggregations.keys()) == ['_totalCount', 'category', 'code_display', 'encounter_type',
                                                        'project_id']
     print("How many observation 'categories' do they have?", observation_aggregations['category'])
+    assert observation_aggregations._totalCount > 0
+
     print("Number of observation in 1st page", len(rows.observation), "Total number of observations",
           rows._aggregation.observation._totalCount)
     print("********* Female")
@@ -53,6 +58,8 @@ def _run_queries(auth):
                                                    'project_id']
     print("How many patients do we have with 'female' gender?", patient_filter, patient_aggregations._totalCount,
           len(keys))
+    assert patient_aggregations._totalCount > 0
+
     print("What are there races?", patient_aggregations['extension_0_extension_1_valueString'])
     print(rows.keys())
     print("Number of patients in 1st page", len(rows.patient), "Total number of patients",
@@ -61,6 +68,7 @@ def _run_queries(auth):
     observation_aggregations = aggregation._aggregation.observation
     assert sorted(observation_aggregations.keys()) == ['_totalCount', 'category', 'code_display', 'encounter_type',
                                                        'project_id']
+    assert observation_aggregations._totalCount > 0
     print("How many observation 'categories' do they have?", observation_aggregations['category'])
     print("Number of observation in 1st page", len(rows.observation), "Total number of observations",
           rows._aggregation.observation._totalCount)
