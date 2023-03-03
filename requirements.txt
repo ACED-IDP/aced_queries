@@ -1,0 +1,13 @@
+PyYAML
+requests
+gen3
+flatten_json
+dotwiz
+
+# # for load elastic (guppy)
+# more_itertools
+# # using old version of ES.
+# # https://github.com/elastic/elasticsearch-py/issues/1933#issuecomment-1073830411#
+# elasticsearch==6.8.2
+
+

@@ -1,0 +1,61 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+# Optionally debug via SSH
+# Ref: https://fleetdm.com/engineering/tips-for-github-actions-usability
+#
+# To use this step uncomment and place anywhere in the build steps. The build will pause on this step and
+# output a ssh address associated with the Github action worker. Helpful for debugging build steps and
+# and intermediary files/artifacts.
+# Example:
+#   Web shell: https://tmate.io/t/q8FU3U9SvmMVxAhMHRyExNhr8
+#   SSH: ssh q8FU3U9SvmMVxAhMHRyExNhr8@sfo2.tmate.io
+#
+# - name: Setup tmate session
+#   uses: mxschmitt/action-tmate@v3
+
+name: ACED Queries
+
+on:
+  push:
+    branches: [ "main", "feature/**" ]
+    tags:
+      - '**'
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["macos-latest", "ubuntu-latest", "windows-latest"]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 tests/ aced_queries/  --count --statistics
+
+      - name: Unit tests (No server dependencies) with pytest
+        run: pytest tests/unit --cov=aced_queries --cov-report term-missing
+
+#      - name: Unit and Integration tests with pytest
+#        run: pytest tests/unit tests/integration --cov=drs_downloader --cov-report term-missing
