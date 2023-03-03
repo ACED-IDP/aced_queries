@@ -1,0 +1,209 @@
+vertices:
+
+  observation:
+    queries:
+      aggregation: |2-
+      
+        query ($filter: JSON) {
+          _aggregation {
+            observation(filter: $filter, filterSelf: false, accessibility: all) {
+              category {
+                histogram {
+                  key
+                  count
+                }
+              }
+              code {
+                histogram {
+                  key
+                  count
+                }
+              }
+               predicted_phenotype{
+                histogram {
+                  key
+                  count
+                }
+              }
+              project_id {
+                histogram {
+                  key
+                  count
+                }
+              },
+              _totalCount
+            }
+          }
+        }
+      
+
+      keys:
+        fields: [ 'id', 'patient_id' ]
+      rows: |2-
+      
+        query ($filter: JSON) {
+          observation(accessibility: all, offset: 0, first: 20, filter: $filter) {
+            patient_id
+            category
+            code
+            referenceRange
+            valueQuantity
+            valueQuantity_unit
+            valueQuantity_value
+            valueString
+            valueTime
+            predicted_phenotype
+            predicted_phenotype_1
+            predicted_phenotype_2
+            predicted_phenotype_3
+            predicted_phenotype_4
+            predicted_phenotype_5
+            predicted_phenotype_6
+            gene_studied_id
+            evidence_level
+            genomic_reference_sequence_id
+          }
+          _aggregation {
+            observation(filter: $filter, accessibility: all) {
+              _totalCount
+            }
+          }
+        }
+    
+    
+
+    keys:
+      inbound:
+        key_name: PATIENTS
+        property: patient_id
+      outbound:
+        key_name: PATIENTS
+        property: patient_id
+
+  patient:
+    queries:
+      aggregation: |2-
+      
+        query ($filter: JSON) {
+          _aggregation {
+            patient(filter: $filter, filterSelf: false, accessibility: all) {
+              gender {
+                histogram {
+                  key
+                  count
+                }
+              }
+              us_core_race {
+                histogram {
+                  key
+                  count
+                }
+              }
+              project_id {
+                histogram {
+                  key
+                  count
+                }
+              },
+              _totalCount
+            }
+          }
+        }
+      
+
+      keys:
+        fields: [ 'id' ]
+      rows: |2-
+      
+        query ($sort: JSON,$filter: JSON,) {
+            patient (accessibility: all, offset: 0, first: 20, , sort: $sort, filter: $filter,) {
+                id
+                gender
+                us_core_race
+                project_id                    
+            }
+            _aggregation {
+              patient (filter: $filter, accessibility: all) {
+                _totalCount
+              }
+            }
+        }    
+    
+    
+    
+
+    keys:
+      inbound:
+        key_name: PATIENTS
+        property: id
+      outbound:
+        key_name: PATIENTS
+        property: id
+
+  file:
+    queries:
+      aggregation: |2-
+      
+        query {
+            _aggregation {
+              file (accessibility: unaccessible) {
+                project_id {
+                  histogram {
+                    key
+                    count
+                  }
+                },
+                data_format {
+                  histogram {
+                    key
+                    count
+                  }
+                },
+                data_type {
+                  histogram {
+                    key
+                    count
+                  }
+                },         
+                _totalCount
+              }
+            }
+          }            
+
+      keys:
+        inbound:
+          key_name: PATIENTS
+          property: id
+        outbound:
+          key_name: PATIENTS
+          property: patient_id
+
+      rows: |2-
+      
+        query ($filter: JSON,) {
+            file (accessibility: all, offset: 0, first: 20, , filter: $filter,) {          
+              project_id
+              file_name
+              file_size
+              object_id
+              data_format
+              data_type
+            }
+            _aggregation {
+              file (filter: $filter, accessibility: all) {
+                _totalCount
+              }
+            }
+          }            
+
+    keys:
+      inbound:
+        key_name: PATIENTS
+        property: patient_id
+      outbound:
+        key_name: PATIENTS
+        property: patient_id
+
+variables:
+  default: { "filter": { "AND": [ ] }, "sort": [ ] }
+
